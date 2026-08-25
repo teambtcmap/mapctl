@@ -40,6 +40,38 @@ pub fn submit_place(args: &SubmitPlaceArgs) -> Result<()> {
 }
 
 #[derive(Args)]
+pub struct ReportArgs {
+    pub place_id: i64,
+    #[arg(long)]
+    pub origin: String,
+    #[arg(long)]
+    pub r#type: String,
+    #[arg(long)]
+    pub comment: Option<String>,
+    #[arg(long = "extra-fields")]
+    pub extra_fields: Option<String>,
+}
+
+pub fn report(args: &ReportArgs) -> Result<()> {
+    let mut extra_fields = match args.extra_fields.as_deref() {
+        Some(raw) => serde_json::from_str::<Map<String, Value>>(raw)
+            .map_err(|e| format!("invalid --extra-fields JSON: {e}"))?,
+        None => Map::new(),
+    };
+    if let Some(comment) = &args.comment {
+        extra_fields.insert("comment".to_string(), Value::String(comment.clone()));
+    }
+
+    let params = json!({
+        "origin": args.origin,
+        "place_id": args.place_id,
+        "type": args.r#type,
+        "extra_fields": extra_fields,
+    });
+    rpc::call("report_place", params)?.print()
+}
+
+#[derive(Args)]
 pub struct GetSubmittedPlaceArgs {
     pub id: String,
 }

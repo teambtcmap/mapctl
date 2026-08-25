@@ -138,13 +138,15 @@ mod sections {
     }
 
     #[derive(Subcommand)]
-    pub enum PlaceImport {
+    pub enum Place {
         /// Submit new place to BTC Map. Place submissions are processed manually, so use catiously and prefer direct OSM merge.
-        SubmitPlace(command::import::SubmitPlaceArgs),
+        SubmitPlace(command::place::SubmitPlaceArgs),
+        /// Submit a typed report against an existing place (e.g. outdated, missing payment method).
+        Report(command::place::ReportArgs),
         /// Fetch processing/processed submission to look up all the details.
-        GetSubmittedPlace(command::import::GetSubmittedPlaceArgs),
+        GetSubmittedPlace(command::place::GetSubmittedPlaceArgs),
         /// Revoke previously submitted place.
-        RevokeSubmittedPlace(command::import::RevokeSubmittedPlaceArgs),
+        RevokeSubmittedPlace(command::place::RevokeSubmittedPlaceArgs),
         /// List every import origin currently configured on the server.
         ListOrigins,
     }
@@ -260,8 +262,8 @@ fn build_cli() -> Command {
             "event",
             "Server events",
         )))
-        .subcommand(sections::PlaceImport::augment_subcommands(section(
-            "place-import",
+        .subcommand(sections::Place::augment_subcommands(section(
+            "place",
             "Place submission and review",
         )))
         .subcommand(sections::ElectrumServer::augment_subcommands(section(
@@ -425,15 +427,14 @@ fn dispatch(section: &str, sub_matches: &ArgMatches) -> Result<()> {
             sections::Event::UpdateEvent(args) => command::event::update_event(&args),
             sections::Event::DeleteEvent(args) => command::event::delete_event(&args),
         },
-        "place-import" => match sections::PlaceImport::from_arg_matches(sub_matches)? {
-            sections::PlaceImport::SubmitPlace(args) => command::import::submit_place(&args),
-            sections::PlaceImport::GetSubmittedPlace(args) => {
-                command::import::get_submitted_place(&args)
+        "place" => match sections::Place::from_arg_matches(sub_matches)? {
+            sections::Place::SubmitPlace(args) => command::place::submit_place(&args),
+            sections::Place::Report(args) => command::place::report(&args),
+            sections::Place::GetSubmittedPlace(args) => command::place::get_submitted_place(&args),
+            sections::Place::RevokeSubmittedPlace(args) => {
+                command::place::revoke_submitted_place(&args)
             }
-            sections::PlaceImport::RevokeSubmittedPlace(args) => {
-                command::import::revoke_submitted_place(&args)
-            }
-            sections::PlaceImport::ListOrigins => command::import::list_origins(),
+            sections::Place::ListOrigins => command::place::list_origins(),
         },
         "electrum-server" => match sections::ElectrumServer::from_arg_matches(sub_matches)? {
             sections::ElectrumServer::List(args) => command::electrum_server::list(&args),
