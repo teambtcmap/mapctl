@@ -75,3 +75,14 @@ pub fn remove(args: &RemoveArgs) -> Result<()> {
     let params = json!({ "id": args.id });
     rpc::call("remove_electrum_server", params)?.print()
 }
+
+#[derive(Args)]
+pub struct PingArgs {
+    #[arg(long)]
+    pub include_deleted: bool,
+}
+
+pub fn ping(args: &PingArgs) -> Result<()> {
+    let params = json!({ "include_deleted": args.include_deleted });
+    rpc::call("ping_electrum_servers", params)?.print()
+}

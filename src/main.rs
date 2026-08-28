@@ -161,6 +161,8 @@ mod sections {
         Update(command::electrum_server::UpdateArgs),
         /// Soft-delete an electrum server. Use --include-deleted when listing to see it again.
         Remove(command::electrum_server::RemoveArgs),
+        /// Probe every electrum server with a JSON-RPC ping and report per-server success/failure.
+        Ping(command::electrum_server::PingArgs),
     }
 
     #[derive(Subcommand)]
@@ -441,6 +443,7 @@ fn dispatch(section: &str, sub_matches: &ArgMatches) -> Result<()> {
             sections::ElectrumServer::Add(args) => command::electrum_server::add(&args),
             sections::ElectrumServer::Update(args) => command::electrum_server::update(&args),
             sections::ElectrumServer::Remove(args) => command::electrum_server::remove(&args),
+            sections::ElectrumServer::Ping(args) => command::electrum_server::ping(&args),
         },
         "wallet" => match sections::Wallet::from_arg_matches(sub_matches)? {
             sections::Wallet::List(args) => command::wallet::list(&args),
