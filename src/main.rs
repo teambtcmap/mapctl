@@ -56,8 +56,8 @@ mod sections {
         GenerateElementIssues(command::element::GenerateElementIssuesArgs),
         /// Fetch the latest Overpass snapshot and merge it with cached elements. It may take a long time and it's not supposed to be called manually
         SyncElements(command::element::SyncElementsArgs),
-        /// Generate icon:android tags for a specific element id range
-        GenerateElementIcons(command::element::GenerateElementIconsArgs),
+        /// Generate icon:android tags for every element
+        GenerateIcons(command::element::GenerateIconsArgs),
         /// Generate category tags for a specific element id range
         GenerateElementCategories(command::element::GenerateElementCategoriesArgs),
     }
@@ -374,7 +374,7 @@ fn dispatch(section: &str, sub_matches: &ArgMatches) -> Result<()> {
                 element::generate_element_issues(&args)
             }
             sections::Element::SyncElements(args) => element::sync_elements(&args),
-            sections::Element::GenerateElementIcons(args) => element::generate_element_icons(&args),
+            sections::Element::GenerateIcons(args) => element::generate_icons(&args),
             sections::Element::GenerateElementCategories(args) => {
                 element::generate_element_categories(&args)
             }

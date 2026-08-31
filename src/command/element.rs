@@ -120,17 +120,10 @@ pub fn sync_elements(_: &SyncElementsArgs) -> Result<()> {
 }
 
 #[derive(Args)]
-pub struct GenerateElementIconsArgs {
-    pub from_element_id: i64,
-    pub to_element_id: i64,
-}
+pub struct GenerateIconsArgs {}
 
-pub fn generate_element_icons(args: &GenerateElementIconsArgs) -> Result<()> {
-    rpc::call(
-        "generate_element_icons",
-        json!({"from_element_id": args.from_element_id,"to_element_id": args.to_element_id}),
-    )?
-    .print()
+pub fn generate_icons(_: &GenerateIconsArgs) -> Result<()> {
+    rpc::call("generate_element_icons", json!({}))?.print()
 }
 
 #[derive(Args)]
