@@ -126,14 +126,15 @@ mod sections {
 
     #[derive(Subcommand)]
     pub enum Event {
+        /// Add a new event. Omit --starts-at/--ends-at/--cron-schedule for a permanent event with no fixed schedule
         CreateEvent(command::event::CreateEventArgs),
-        /// Get all events
+        /// Get all events. By default soft-deleted and past events are excluded
         GetEvents(command::event::GetEventsArgs),
         /// Get event by id
         GetEvent(command::event::GetEventArgs),
-        /// Update event by id
+        /// Partially update an event by id. Only the fields you pass are changed; use --clear-* to reset nullable fields
         UpdateEvent(command::event::UpdateEventArgs),
-        /// Delete event by id
+        /// Soft-delete an event by id
         DeleteEvent(command::event::DeleteEventArgs),
     }
 
